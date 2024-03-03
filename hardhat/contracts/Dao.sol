@@ -1,11 +1,9 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.24;
 
-import '@openzeppelin/contracts/access/Ownable.sol';
-import '@openzeppelin/contracts/token/ERC20/ERC20.sol';
-
-contract Dao is ERC20("Flow", "FLO") {
-    constructor() {
-        // TODO
+contract Dao {
+    uint public data;
+    function setData(uint _data) public {
+        data = _data;
     }
 }
