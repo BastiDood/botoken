@@ -1,5 +1,6 @@
 {
     "name": "daoism-solidity",
+    "main": "typechain-types/index.ts",
     "scripts": {
         "compile": "hardhat compile",
         "test": "hardhat test",

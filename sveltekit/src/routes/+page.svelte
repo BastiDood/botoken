@@ -1,7 +1,7 @@
 <script lang="ts">
     import { array, parse, string } from 'valibot';
     import { BrowserProvider } from 'ethers';
-    import { Dao__factory } from '$contracts/typechain-types';
+    import { Dao__factory } from '../../../hardhat/typechain-types'; // HACK
     import env from '$lib/env';
     import { getToastStore } from '@skeletonlabs/skeleton';
 
@@ -32,6 +32,6 @@
     }
 </script>
 
-<button type="button" class="btn variant-filled-primary" on:click={({ currentTarget }) => connect(currentTarget)}
+<button type="button" class="btn variant-filled" on:click={({ currentTarget }) => connect(currentTarget)}
     >Connect Wallet</button
 >
