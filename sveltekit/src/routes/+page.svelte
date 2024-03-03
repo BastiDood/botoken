@@ -1,10 +1,13 @@
 <script lang="ts">
-    import { array, string, parse } from 'valibot';
+    import { array, parse, string } from 'valibot';
     import { BrowserProvider } from 'ethers';
+    import { Dao__factory } from '$contracts/typechain-types';
+    import env from '$lib/env';
     import { getToastStore } from '@skeletonlabs/skeleton';
 
-    const toast = getToastStore();
+    // eslint-disable-next-line no-undef
     const provider = typeof ethereum === 'undefined' ? null : new BrowserProvider(ethereum);
+    const toast = getToastStore();
 
     async function connect(button: HTMLButtonElement) {
         if (provider === null) {
@@ -21,6 +24,8 @@
             const result = await provider.send('eth_requestAccounts', []);
             const wallets = parse(array(string()), result);
             console.log(wallets);
+            const contract = Dao__factory.connect(env.DEPLOYMENT_ADDRESS, provider);
+            console.log(await contract.data());
         } finally {
             button.disabled = false;
         }
