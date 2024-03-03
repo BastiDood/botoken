@@ -1,1 +1,1 @@
-<p>Hello world!</p>
+<button type="button" class="btn variant-filled-primary">Hello world!</button>
