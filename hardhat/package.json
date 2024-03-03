@@ -3,13 +3,14 @@
     "scripts": {
         "compile": "hardhat compile",
         "test": "hardhat test",
-        "start": "hardhat run scripts/deploy.ts"
+        "verify": "hardhat verify --network arbitrum-sepolia 0x1ca15F03E8169905E0d12ea8202a72c20bC047b1",
+        "deploy:arb": "hardhat run --network arbitrum-sepolia scripts/deploy.ts"
     },
     "devDependencies": {
-        "@nomicfoundation/hardhat-chai-matchers": "^2.0.6",
         "@nomicfoundation/hardhat-ethers": "^3.0.5",
         "@nomicfoundation/hardhat-toolbox": "^4.0.0",
         "@openzeppelin/contracts": "^5.0.2",
+        "dotenv": "^16.4.5",
         "ethers": "^6.11.1",
         "hardhat": "^2.20.1"
     }
