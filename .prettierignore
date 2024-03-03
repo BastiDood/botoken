@@ -2,11 +2,13 @@
 .env
 .env.*
 !.env.example
+.svelte-kit
 
-/artifacts
-/cache
-/node_modules
-/typechain-types
+artifacts
+build
+cache
+node_modules
+typechain-types
 
 # Ignore files for PNPM, NPM and YARN
 pnpm-lock.yaml
