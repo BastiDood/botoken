@@ -1,5 +1,5 @@
 {
-    "name": "daoism-solidity",
+    "name": "botoken-solidity",
     "main": "typechain-types/index.ts",
     "scripts": {
         "compile": "hardhat compile",

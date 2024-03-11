@@ -1,5 +1,5 @@
 {
-    "name": "daoism-sveltekit",
+    "name": "botoken-sveltekit",
     "type": "module",
     "scripts": {
         "dev": "vite",
