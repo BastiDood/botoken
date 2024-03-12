@@ -1,5 +1,5 @@
 import '@nomicfoundation/hardhat-toolbox';
-import type { HardhatUserConfig } from 'hardhat/config';
+import type { HardhatUserConfig } from 'hardhat/types';
 import { config } from 'dotenv';
 
 function assert(condition: unknown, msg = 'assertion error'): asserts condition {
