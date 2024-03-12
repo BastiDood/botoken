@@ -2,11 +2,11 @@
 pragma solidity ^0.8.24;
 
 import '@openzeppelin/contracts/access/Ownable.sol';
-import '@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol';
+import '@openzeppelin/contracts/token/ERC20/ERC20.sol';
 import '@openzeppelin/contracts/utils/math/SignedMath.sol';
 import '@openzeppelin/contracts/utils/structs/EnumerableSet.sol';
 
-contract Botoken is ERC20('Botoken', 'BTK'), ERC20Burnable, Ownable(msg.sender) {
+contract Botoken is ERC20('Botoken', 'BTK'), Ownable(msg.sender) {
     using EnumerableSet for EnumerableSet.AddressSet;
 
     struct Poll {
@@ -45,38 +45,40 @@ contract Botoken is ERC20('Botoken', 'BTK'), ERC20Burnable, Ownable(msg.sender) 
         _mint(address(this), _supply);
     }
 
-    function title(address _author) public view validPoll(_author) returns(string memory) {
+    function title(address _author) public view validPoll(_author) returns (string memory) {
         return _polls[_author]._title;
     }
 
-    function pot(address _author) public view validPoll(_author) returns(uint) {
+    function pot(address _author) public view validPoll(_author) returns (uint) {
         return _polls[_author]._pot;
     }
 
-    function balance(address _author) public view validPoll(_author) returns(int) {
+    function balance(address _author) public view validPoll(_author) returns (int) {
         return _polls[_author]._balance;
     }
 
     function createPoll(string memory _title, uint _stake) public vacantPoll(_msgSender()) nonOwner {
-        Poll storage _poll = _polls[_msgSender()];
+        address sender = _msgSender();
+        Poll storage _poll = _polls[sender];
         _poll._title = _title;
         _poll._pot = _stake;
-        storeResidual(_stake);
+        _transfer(sender, address(this), _stake);
     }
 
     function voteOn(address _author, int _vote) public validPoll(_author) nonOwner {
         // Sway the vote balance (positive or negative)
+        address sender = _msgSender();
         Poll storage _poll = _polls[_author];
         _poll._balance += _vote;
-        _poll._voters.add(_msgSender());
+        _poll._voters.add(sender);
 
         // Contribute to the poll-level pot
         uint _amount = SignedMath.abs(_vote);
         _poll._pot += _amount;
-        storeResidual(_amount);
+        _transfer(sender, address(this), _amount);
     }
 
-    function closePoll(address _author) public validPoll(_author) onlyOwner returns(int) {
+    function closePoll(address _author) public validPoll(_author) onlyOwner returns (int) {
         Poll storage _poll = _polls[_author];
 
         address[] memory _voters = _poll._voters.values();
@@ -85,8 +87,7 @@ contract Botoken is ERC20('Botoken', 'BTK'), ERC20Burnable, Ownable(msg.sender) 
 
         // Evenly redistribute the voting power
         releaseResidual(_author, _share);
-        for (uint i = 0; i < _count; ++i)
-            releaseResidual(_voters[i], _share);
+        for (uint i = 0; i < _count; ++i) releaseResidual(_voters[i], _share);
 
         // NOTE: Residual tokens are kept by the contract.
         int _balance = _poll._balance;
