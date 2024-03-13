@@ -1,9 +1,14 @@
-<script lang="ts">
-    import { Botoken__factory } from '../../../hardhat/typechain-types';
-    import CreatePoll from './CreatePoll.svelte';
+<script>
+    import { Botoken__factory } from '../../../../../hardhat/typechain-types';
     import Error from '$lib/alerts/Error.svelte';
+    import GetPoll from './GetPoll.svelte';
     import { ProgressBar } from '@skeletonlabs/skeleton';
     import { get } from '$lib/provider';
+
+    // eslint-disable-next-line
+    export let data;
+    $: ({ poll } = data);
+
     const provider = get();
 </script>
 
@@ -14,7 +19,7 @@
         <ProgressBar />
     {:then { address }}
         {@const contract = Botoken__factory.connect(address, provider)}
-        <CreatePoll {contract} />
+        <GetPoll {poll} {contract} />
     {:catch err}
         <Error>{err}</Error>
     {/await}

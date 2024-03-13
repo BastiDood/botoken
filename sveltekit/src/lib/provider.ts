@@ -11,8 +11,8 @@ function create() {
 type Provider = ReturnType<typeof create>;
 
 export function init() {
-    const store = create();
-    setContext(ETHEREUM, store);
+    const provider = create();
+    setContext(ETHEREUM, provider);
 }
 
 export function get() {
