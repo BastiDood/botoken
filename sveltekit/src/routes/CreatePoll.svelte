@@ -1,11 +1,17 @@
 <script lang="ts">
     import { PlusCircle, XCircle } from '@steeze-ui/heroicons';
     import type { Botoken } from '../../../hardhat/typechain-types'; // HACK
+    import { EventLog, isAddress } from 'ethers';
     import { Icon } from '@steeze-ui/svelte-icon';
     import { assert } from '$lib/assert';
+    import { goto } from '$app/navigation';
 
     // eslint-disable-next-line init-declarations
     export let contract: Botoken;
+
+    function isEvent(log: unknown): log is EventLog {
+        return log instanceof EventLog;
+    }
 
     async function submit(form: HTMLFormElement, button: HTMLElement | null) {
         assert(button !== null, 'empty button submitter');
@@ -16,9 +22,23 @@
         assert(typeof title === 'string', 'non-string input encountered');
         assert(title.length > 0, 'empty title encountered');
 
+        const amount = data.get('amount') ?? '';
+        assert(typeof amount === 'string', 'non-string input encountered');
+        assert(amount.length > 0, 'empty title encountered');
+        const stake = parseInt(amount, 10);
+
         button.disabled = true;
         try {
-            // TODO
+            const result = await contract.createPoll(title, stake);
+            const receipt = await result.wait();
+            assert(receipt !== null, 'transaction has not been minted');
+
+            const event = receipt.logs.find(isEvent);
+            assert(typeof event !== 'undefined', 'event log not found');
+
+            const address = event.args[0];
+            assert(isAddress(address), 'non-address event argument for poll creation');
+            await goto(`/poll/${address}`);
         } finally {
             button.disabled = false;
         }
@@ -37,7 +57,7 @@
         </label>
         <label class="label col-span-full grid grid-cols-subgrid items-center">
             <span>Amount</span>
-            <input type="number" name="title" placeholder="BTK" required class="input px-4 py-2" />
+            <input type="number" name="amount" placeholder="BTK" required class="input px-4 py-2" />
         </label>
         <button type="submit" class="btn variant-filled-success col-span-full">
             <Icon src={PlusCircle} theme="mini" class="size-6" />

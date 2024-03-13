@@ -1,7 +1,7 @@
 <script lang="ts">
     import { type Botoken, Botoken__factory } from '../../../hardhat/typechain-types'; // HACK
     import { array, parse, string } from 'valibot';
-    import { BrowserProvider } from 'ethers';
+    import { BrowserProvider, JsonRpcSigner } from 'ethers';
     import CreatePoll from './CreatePoll.svelte';
     import { Icon } from '@steeze-ui/svelte-icon';
     import { Wallet } from '@steeze-ui/heroicons';
@@ -21,19 +21,18 @@
             });
             return;
         }
-
         button.disabled = true;
         try {
-            const result = await provider.send('eth_requestAccounts', []);
-            const [wallet, ...rest] = parse(array(string()), result);
-            if (rest.length > 0) console.warn(`ignored ${rest.length} wallets`);
-            if (typeof wallet === 'undefined')
+            const { address } = await provider.getSigner();
+            contract = Botoken__factory.connect(address, provider);
+        } catch (err) {
+            if (err instanceof Error)
                 toast.trigger({
-                    message: 'No wallets available.',
+                    message: `[${err.name}]: ${err.message}`,
                     background: 'variant-filled-error',
                     autohide: false,
                 });
-            else contract = Botoken__factory.connect(wallet, provider);
+            throw err;
         } finally {
             button.disabled = false;
         }
