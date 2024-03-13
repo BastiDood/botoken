@@ -9,6 +9,10 @@ import '@openzeppelin/contracts/utils/structs/EnumerableSet.sol';
 contract Botoken is ERC20('Botoken', 'BTK'), Ownable(msg.sender) {
     using EnumerableSet for EnumerableSet.AddressSet;
 
+    event Creation(address indexed author, string title, uint stake);
+    event Vote(address indexed author, address indexed voter, int balance);
+    event Close(address indexed author, int balance);
+
     struct Poll {
         string _title;
         /** Who to distribute tokens to? */
@@ -58,24 +62,26 @@ contract Botoken is ERC20('Botoken', 'BTK'), Ownable(msg.sender) {
     }
 
     function createPoll(string memory _title, uint _stake) public vacantPoll(_msgSender()) nonOwner {
-        address sender = _msgSender();
-        Poll storage _poll = _polls[sender];
+        address _author = _msgSender();
+        Poll storage _poll = _polls[_author];
         _poll._title = _title;
         _poll._pot = _stake;
-        _transfer(sender, address(this), _stake);
+        _transfer(_author, address(this), _stake);
+        emit Creation(_author, _title, _stake);
     }
 
     function voteOn(address _author, int _vote) public validPoll(_author) nonOwner {
         // Sway the vote balance (positive or negative)
-        address sender = _msgSender();
+        address _sender = _msgSender();
         Poll storage _poll = _polls[_author];
         _poll._balance += _vote;
-        _poll._voters.add(sender);
+        _poll._voters.add(_sender);
 
         // Contribute to the poll-level pot
         uint _amount = SignedMath.abs(_vote);
         _poll._pot += _amount;
-        _transfer(sender, address(this), _amount);
+        _transfer(_sender, address(this), _amount);
+        emit Vote(_author, _sender, _poll._balance);
     }
 
     function closePoll(address _author) public validPoll(_author) onlyOwner returns (int) {
@@ -89,8 +95,10 @@ contract Botoken is ERC20('Botoken', 'BTK'), Ownable(msg.sender) {
         releaseResidual(_author, _share);
         for (uint i = 0; i < _count; ++i) releaseResidual(_voters[i], _share);
 
-        // NOTE: Residual tokens are kept by the contract.
         int _balance = _poll._balance;
+        emit Close(_author, _balance);
+
+        // NOTE: Residual tokens are kept by the contract.
         delete _polls[_author];
         return _balance;
     }

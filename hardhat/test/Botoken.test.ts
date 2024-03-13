@@ -7,7 +7,7 @@ async function deployFixture() {
     const [owner, alice, bob, charlie] = await ethers.getSigners();
     const factory = await ethers.getContractFactory('Botoken');
     const Botoken = await factory.deploy(100);
-    const deployment = await Botoken.waitForDeployment();
+    await Botoken.waitForDeployment();
     const botoken = await Botoken.getAddress();
     return { Botoken, botoken, alice, bob, charlie, owner };
 }
@@ -43,33 +43,44 @@ describe('full election flow', () => {
         expect(await Botoken.balanceOf(botoken)).to.be.eq(0n);
         expect(await Botoken.balanceOf(charlie)).to.be.eq(50n);
 
-        // Alice creates the poll
-        await Alice.createPoll('Does this test pass?', 10n);
-        expect(await Botoken.balanceOf(botoken)).to.be.eq(10n);
-        expect(await Botoken.balanceOf(alice)).to.be.eq(10n);
-        expect(await Botoken.title(alice)).to.be.eq('Does this test pass?');
-        expect(await Botoken.pot(alice)).to.be.eq(10n);
-        expect(await Botoken.balance(alice)).to.be.eq(0n);
+        {
+            // Alice creates the poll
+            const result = await Alice.createPoll('Does this test pass?', 10n);
+            expect(result).to.emit(Alice, 'Creation').withArgs([alice, 'Does this test pass?', 10n]);
+            expect(await Botoken.balanceOf(botoken)).to.be.eq(10n);
+            expect(await Botoken.balanceOf(alice)).to.be.eq(10n);
+            expect(await Botoken.title(alice)).to.be.eq('Does this test pass?');
+            expect(await Botoken.pot(alice)).to.be.eq(10n);
+            expect(await Botoken.balance(alice)).to.be.eq(0n);
+        }
 
-        // Bob votes on the poll positively
-        await Bob.voteOn(alice, 10n);
-        expect(await Botoken.balanceOf(bob)).to.be.eq(20n);
-        expect(await Botoken.pot(alice)).to.be.eq(20n);
-        expect(await Botoken.balance(alice)).to.be.eq(10n);
+        {
+            // Bob votes on the poll positively
+            const result = await Bob.voteOn(alice, 10n);
+            expect(result).to.emit(Bob, 'Vote').withArgs([alice, bob, 10n]);
+            expect(await Botoken.balanceOf(bob)).to.be.eq(20n);
+            expect(await Botoken.pot(alice)).to.be.eq(20n);
+            expect(await Botoken.balance(alice)).to.be.eq(10n);
+        }
 
-        // Charlie votes on the poll negatively
-        await Charlie.voteOn(alice, -20n);
-        expect(await Botoken.balanceOf(charlie)).to.be.eq(30n);
-        expect(await Botoken.pot(alice)).to.be.eq(40n);
-        expect(await Botoken.balance(alice)).to.be.eq(-10n);
+        {
+            // Charlie votes on the poll negatively
+            const result = await Charlie.voteOn(alice, -20n);
+            expect(result).to.emit(Charlie, 'Vote').withArgs([alice, charlie, -20n]);
+            expect(await Botoken.balanceOf(charlie)).to.be.eq(30n);
+            expect(await Botoken.pot(alice)).to.be.eq(40n);
+            expect(await Botoken.balance(alice)).to.be.eq(-10n);
+        }
 
-        // TODO: Test the return value.
-        const { value } = await Owner.closePoll(alice);
-        expect(value).to.be.eq(-10);
-        expect(await Botoken.balanceOf(botoken)).to.be.eq(1n);
-        expect(await Botoken.balanceOf(owner)).to.be.eq(0n);
-        expect(await Botoken.balanceOf(alice)).to.be.eq(10n + 13n);
-        expect(await Botoken.balanceOf(bob)).to.be.eq(20n + 13n);
-        expect(await Botoken.balanceOf(charlie)).to.be.eq(30n + 13n);
+        {
+            // Owner closes the poll
+            const result = await Owner.closePoll(alice);
+            expect(result).to.emit(Owner, 'Close').withArgs([alice, -10n]);
+            expect(await Botoken.balanceOf(botoken)).to.be.eq(1n);
+            expect(await Botoken.balanceOf(owner)).to.be.eq(0n);
+            expect(await Botoken.balanceOf(alice)).to.be.eq(10n + 13n);
+            expect(await Botoken.balanceOf(bob)).to.be.eq(20n + 13n);
+            expect(await Botoken.balanceOf(charlie)).to.be.eq(30n + 13n);
+        }
     });
 });
