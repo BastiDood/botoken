@@ -8,5 +8,7 @@
 <Toast />
 <AppShell>
     <SideBar slot="sidebarLeft" />
-    <slot />
+    <div class="p-4">
+        <slot />
+    </div>
 </AppShell>
