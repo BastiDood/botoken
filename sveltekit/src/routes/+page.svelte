@@ -1,7 +1,6 @@
 <script lang="ts">
     import { type Botoken, Botoken__factory } from '../../../hardhat/typechain-types'; // HACK
-    import { array, parse, string } from 'valibot';
-    import { BrowserProvider, JsonRpcSigner } from 'ethers';
+    import { BrowserProvider } from 'ethers';
     import CreatePoll from './CreatePoll.svelte';
     import { Icon } from '@steeze-ui/svelte-icon';
     import { Wallet } from '@steeze-ui/heroicons';
