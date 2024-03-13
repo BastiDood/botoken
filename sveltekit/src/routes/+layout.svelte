@@ -2,6 +2,8 @@
     import './app.css';
     import { AppShell, Toast, initializeStores } from '@skeletonlabs/skeleton';
     import SideBar from './SideBar.svelte';
+    import { init } from '$lib/provider';
+    init();
     initializeStores();
 </script>
 

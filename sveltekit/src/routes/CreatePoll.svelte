@@ -1,7 +1,7 @@
 <script lang="ts">
     import { PlusCircle, XCircle } from '@steeze-ui/heroicons';
-    import type { Botoken } from '../../../hardhat/typechain-types'; // HACK
     import { EventLog, isAddress } from 'ethers';
+    import type { Botoken } from '../../../hardhat/typechain-types';
     import { Icon } from '@steeze-ui/svelte-icon';
     import { assert } from '$lib/assert';
     import { goto } from '$app/navigation';
