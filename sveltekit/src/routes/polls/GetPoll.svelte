@@ -1,7 +1,7 @@
 <script lang="ts">
     import { ProgressBar, getToastStore } from '@skeletonlabs/skeleton';
     import { Bookmark } from '@steeze-ui/heroicons';
-    import type { Botoken } from '../../../../../hardhat/typechain-types';
+    import type { Botoken } from '../../../../hardhat/typechain-types';
     import ErrorAlert from '$lib/alerts/Error.svelte';
     import { Icon } from '@steeze-ui/svelte-icon';
     import { assert } from '$lib/assert';

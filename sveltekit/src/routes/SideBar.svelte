@@ -14,7 +14,7 @@
         <Icon src={Home} slot="lead" class="size-8" />
         <span>Home</span>
     </AppRailAnchor>
-    <AppRailAnchor href="/polls/" selected={pathname.startsWith('/polls/')}>
+    <AppRailAnchor href="/polls/" selected={pathname === '/polls/'}>
         <Icon src={ClipboardDocumentList} slot="lead" class="size-8" />
         <span>Polls</span>
     </AppRailAnchor>

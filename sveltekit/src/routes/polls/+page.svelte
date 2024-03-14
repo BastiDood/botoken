@@ -1,10 +1,17 @@
 <script lang="ts">
     import { Botoken__factory } from '../../../../hardhat/typechain-types';
-    import CreatePoll from './CreatePoll.svelte';
     import Error from '$lib/alerts/Error.svelte';
     import { ProgressBar } from '@skeletonlabs/skeleton';
     import env from '$lib/env';
     import { get } from '$lib/provider';
+    import { page } from '$app/stores';
+
+    import CreatePoll from './CreatePoll.svelte';
+    import GetPoll from './GetPoll.svelte';
+
+    $: ({ hash } = $page.url);
+    $: poll = hash.slice(1);
+
     const provider = get();
 </script>
 
@@ -16,7 +23,11 @@
         <ProgressBar />
     {:then signer}
         {@const user = contract.connect(signer)}
-        <CreatePoll {user} />
+        {#if hash.length === 0}
+            <CreatePoll {user} />
+        {:else}
+            <GetPoll {user} {poll} />
+        {/if}
     {:catch err}
         <Error>{err}</Error>
     {/await}
