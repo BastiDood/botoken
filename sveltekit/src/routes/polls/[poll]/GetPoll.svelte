@@ -24,9 +24,9 @@
         <h1 class="h1">{title}</h1>
         <p>This poll currently has {pot} BTK in the pot.</p>
         {#if balance > 0}
-            The consensus is <b>yes</b>.
+            The consensus is <strong>yes</strong>.
         {:else if balance < 0}
-            The consensus is <b>no</b>.
+            The consensus is <strong>no</strong>.
         {:else}
             There is no consensus.
         {/if}
