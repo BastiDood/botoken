@@ -1,0 +1,45 @@
+name: Code Quality
+
+on:
+  workflow_dispatch:
+  pull_request:
+  push:
+    branches: main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install `pnpm` via Corepack
+        run: corepack enable
+      - name: Get `pnpm` Store Directory
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+      - uses: actions/cache@v4
+        name: Setup `pnpm` Cache
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+      - name: Install Dependencies
+        run: pnpm install
+      - name: Check Formatters
+        run: pnpm fmt
+      - name: Compile Contract
+        run: pnpm --filter=botoken-hardhat compile
+      - name: Test Contract
+        run: pnpm --filter=botoken-hardhat test
+      - name: Check HTML
+        run: pnpm --filter=botoken-sveltekit lint:html
+      - name: Check CSS
+        run: pnpm --filter=botoken-sveltekit lint:css
+      - name: Synchronize SvelteKit
+        run: pnpm --filter=botoken-sveltekit sync
+      - name: Check JavaScript
+        run: pnpm lint:js
+      - name: Check Svelte
+        run: pnpm --filter=botoken-sveltekit lint:svelte
