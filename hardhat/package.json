@@ -1,6 +1,7 @@
 {
     "name": "botoken-solidity",
     "main": "typechain-types/index.ts",
+    "license": "AGPL-3.0-only",
     "scripts": {
         "compile": "hardhat compile",
         "test": "hardhat test",
