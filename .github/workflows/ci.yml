@@ -9,6 +9,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      PUBLIC_DEPLOYMENT_ADDRESS: '0xeC02974B7E95e653C9bA7f6cFAD3dE98c4c7433d'
     steps:
       - name: Checkout
         uses: actions/checkout@v4
