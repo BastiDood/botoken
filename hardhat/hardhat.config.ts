@@ -8,8 +8,8 @@ if (typeof error !== 'undefined') console.error(error);
 const { ARBITRUM_RPC_URL, WALLET_PRV_KEY } = process.env;
 const networks =
     typeof ARBITRUM_RPC_URL === 'undefined' || typeof WALLET_PRV_KEY === 'undefined'
-        // eslint-disable-next-line no-undefined
-        ? undefined
+        ? // eslint-disable-next-line no-undefined
+          undefined
         : ({
               'arbitrum-sepolia': {
                   url: ARBITRUM_RPC_URL,
