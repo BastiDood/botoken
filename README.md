@@ -84,10 +84,8 @@ pnpm --filter=botoken-sveltekit lint:svelte
 
 | **Environment Variable** | **Description**                                                                 |
 | ------------------------ | ------------------------------------------------------------------------------- |
-| `WALLET_PUB_KEY`         | The public key of the Ethereum wallet for which the contract will be deployed.  |
 | `WALLET_PRV_KEY`         | The private key of the Ethereum wallet for which the contract will be deployed. |
 | `ARBITRUM_RPC_URL`       | The JSON RPC API endpoint for Arbitrum Sepolia interactions.                    |
-| `ETHERSCAN_API_KEY`      | [Etherscan] API key (primarily used for deployment verification).               |
 
 [Etherscan]: https://etherscan.io/
 

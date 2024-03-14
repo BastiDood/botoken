@@ -1,41 +1,21 @@
 import '@nomicfoundation/hardhat-toolbox';
-import type { HardhatUserConfig } from 'hardhat/types';
+import type { HardhatUserConfig, NetworksUserConfig } from 'hardhat/types';
 import { config } from 'dotenv';
-
-function assert(condition: unknown, msg = 'assertion error'): asserts condition {
-    if (!condition) throw new Error(msg);
-}
 
 const { error } = config();
 if (typeof error !== 'undefined') console.error(error);
 
-const { ARBITRUM_RPC_URL, WALLET_PUB_KEY, WALLET_PRV_KEY, ETHERSCAN_API_KEY } = process.env;
-assert(ARBITRUM_RPC_URL, 'no Arbitrum RPC URL provided');
-assert(ETHERSCAN_API_KEY, 'empty API key for Etherscan');
-assert(WALLET_PUB_KEY, 'empty public key for the wallet');
-assert(WALLET_PRV_KEY, 'empty private key for the wallet');
+const { ARBITRUM_RPC_URL, WALLET_PRV_KEY } = process.env;
+const networks =
+    typeof ARBITRUM_RPC_URL === 'undefined' || typeof WALLET_PRV_KEY === 'undefined'
+        // eslint-disable-next-line no-undefined
+        ? undefined
+        : ({
+              'arbitrum-sepolia': {
+                  url: ARBITRUM_RPC_URL,
+                  chainId: 421614,
+                  accounts: [WALLET_PRV_KEY],
+              },
+          } satisfies NetworksUserConfig);
 
-export default {
-    solidity: '0.8.24',
-    networks: {
-        'arbitrum-sepolia': {
-            url: ARBITRUM_RPC_URL,
-            chainId: 421614,
-            accounts: [WALLET_PRV_KEY],
-        },
-    },
-    sourcify: { enabled: true },
-    etherscan: {
-        apiKey: ETHERSCAN_API_KEY,
-        customChains: [
-            {
-                network: 'arbsep',
-                chainId: 421614,
-                urls: {
-                    apiURL: 'https://api-sepolia.arbiscan.io/api',
-                    browserURL: 'https://sepolia.arbiscan.io/',
-                },
-            },
-        ],
-    },
-} satisfies HardhatUserConfig;
+export default { solidity: '0.8.24', networks } satisfies HardhatUserConfig;
