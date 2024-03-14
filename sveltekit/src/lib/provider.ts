@@ -1,6 +1,6 @@
+import { getContext, hasContext, setContext } from 'svelte';
 import { BrowserProvider } from 'ethers';
 import { assert } from '$lib/assert';
-import { getContext, hasContext, setContext } from 'svelte';
 
 const ETHEREUM = Symbol('eth');
 
