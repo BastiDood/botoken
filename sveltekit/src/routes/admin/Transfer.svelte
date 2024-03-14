@@ -20,7 +20,6 @@
     const pattern = '0x[0-9a-f]{40}';
     const dispatch = createEventDispatcher<{ done: Payload }>();
 
-    let disabled = false;
     async function submit(form: HTMLFormElement, button: HTMLElement | null) {
         assert(button !== null, 'empty button submitter');
         assert(button instanceof HTMLButtonElement, 'non-button submitter');
@@ -37,7 +36,7 @@
         const stake = parseInt(amount, 10);
         assert(stake > 0, 'non-positive amount');
 
-        disabled = true;
+        button.disabled = true;
         try {
             const tx = await user.releaseResidual(address, stake);
             const result = await tx.wait();
@@ -52,7 +51,7 @@
                 });
             throw err;
         } finally {
-            disabled = false;
+            button.disabled = false;
         }
 
         toast.trigger({
@@ -82,7 +81,7 @@
         <span>Amount</span>
         <input type="number" name="amount" placeholder="BTK" required class="input px-4 py-2" />
     </label>
-    <button type="submit" name="transfer" {disabled} class="btn variant-filled-error w-full">
+    <button type="submit" name="transfer" class="btn variant-filled-error w-full">
         <Icon src={ArrowRightStartOnRectangle} theme="mini" class="size-6" />
         <span>Transfer</span>
     </button>
