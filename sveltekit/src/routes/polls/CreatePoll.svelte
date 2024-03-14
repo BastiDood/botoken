@@ -40,7 +40,7 @@
 
             const [address, ..._rest] = event.args;
             assert(isAddress(address), 'non-address event argument for poll creation');
-            await goto(`/poll/${address}`);
+            await goto(`/polls/${address}`);
         } catch (err) {
             if (isError(err, 'CALL_EXCEPTION') || isError(err, 'ACTION_REJECTED')) {
                 const reason = err.reason ?? 'unknown reason';
