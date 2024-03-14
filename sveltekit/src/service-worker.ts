@@ -32,4 +32,4 @@ async function fetchCacheFirst(req: Request) {
 const sw = self as unknown as ServiceWorkerGlobalScope;
 sw.addEventListener('install', evt => evt.waitUntil(addFilesToCache()));
 sw.addEventListener('activate', evt => evt.waitUntil(deleteOldCache()));
-sw.addEventListener('fetch', evt => evt.waitUntil(fetchCacheFirst(evt.request)));
+sw.addEventListener('fetch', evt => evt.respondWith(fetchCacheFirst(evt.request)));
