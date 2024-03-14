@@ -3,8 +3,8 @@
     <p>
         <strong>Botoken</strong> is a simple polling system for
         <dfn><abbr>decentralized autonomous organizations</abbr></dfn>
-        (DAOs) by <a href="https://github.com/BastiDood" target="_blank">Basti Ortiz</a>. Botoken aims to create a
-        polling system that fulfills the following goals:
+        (DAOs) by <a href="https://github.com/BastiDood" target="_blank" class="anchor">Basti Ortiz</a>. Botoken aims to
+        create a polling system that fulfills the following goals:
     </p>
     <ul>
         <li>Voters must be incentivized to <em>vote</em>.</li>
@@ -14,14 +14,16 @@
     <p>
         Each Botoken system is composed of three users: The Botoken smart contract is an <a
             href="https://docs.openzeppelin.com/contracts/5.x/api/access#Ownable"
-            target="_blank">ownable</a
+            target="_blank"
+            class="anchor">ownable</a
         > ERC20 token, where the owner is the "administrator" or "arbiter" of polls.
     </p>
     <ul>
         <li>
             Each Botoken smart contract deployment is an <a
                 href="https://docs.openzeppelin.com/contracts/5.x/api/access#Ownable"
-                target="_blank">ownable</a
+                target="_blank"
+                class="anchor">ownable</a
             >
             ERC20 token, where the <strong>Owner</strong> is the <em>only</em> "administrator" or "arbiter" of the
             polling system.
@@ -33,7 +35,7 @@
                 </li>
                 <li>
                     The Owner <em>may</em> transfer tokens from the contract deployment's "residuals" into another
-                    account. More on this in the next section on <a href="#incentive">incentives</a>.
+                    account. More on this in the next section on <a href="#incentive" class="anchor">incentives</a>.
                 </li>
                 <li>
                     A fundamental assumption behind the integrity of the system is the fact that the Owner is a trusted
