@@ -1,10 +1,10 @@
 import type { WebAppManifest } from 'web-app-manifest';
 import { json } from '@sveltejs/kit';
+import logo144 from '$lib/icons/icons-144.png';
+import logo256 from '$lib/icons/icons-256.png';
 import logo32 from '$lib/icons/icons-32.png';
 import logo64 from '$lib/icons/icons-64.png';
 import logo96 from '$lib/icons/icons-96.png';
-import logo144 from '$lib/icons/icons-144.png';
-import logo256 from '$lib/icons/icons-256.png';
 
 export const prerender = true;
 export const trailingSlash = 'never';

@@ -1,7 +1,7 @@
-/// <reference types="@sveltejs/kit" />
-/// <reference no-default-lib="true"/>
-/// <reference lib="esnext" />
-/// <reference lib="webworker" />
+// / <reference types="@sveltejs/kit" />
+// / <reference no-default-lib="true"/>
+// / <reference lib="esnext" />
+// / <reference lib="webworker" />
 
 import { build, files, prerendered, version } from '$service-worker';
 import { assert } from './lib/assert';

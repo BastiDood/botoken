@@ -12,6 +12,7 @@
     import { assert } from '$lib/assert';
     import { createEventDispatcher } from 'svelte';
     import { getToastStore } from '@skeletonlabs/skeleton';
+    import { isError } from 'ethers';
 
     // eslint-disable-next-line init-declarations
     export let user: Botoken;
@@ -45,14 +46,28 @@
             assert(result !== null, 'transaction has not been mined');
             console.log(result);
         } catch (err) {
-            if (err instanceof Error)
+            if (isError(err, 'CALL_EXCEPTION') || isError(err, 'ACTION_REJECTED')) {
+                const reason = err.reason ?? 'unknown reason';
                 toast.trigger({
-                    message: `[${err.name}] ${err.message}`,
+                    message: `[${err.code}]: ${reason}.`,
+                    background: 'variant-filled-error',
+                    autohide: false,
+                });
+            } else if (isError(err, 'INSUFFICIENT_FUNDS'))
+                toast.trigger({
+                    message: '[INSUFFICIENT_FUNDS]: not enough funds.',
+                    background: 'variant-filled-error',
+                    autohide: false,
+                });
+            else if (isError(err, 'UNSUPPORTED_OPERATION'))
+                toast.trigger({
+                    message: '[UNSUPPORTED_OPERATION]: cannot execute the operation.',
                     background: 'variant-filled-error',
                     autohide: false,
                 });
             throw err;
         } finally {
+            // eslint-disable-next-line require-atomic-updates
             button.disabled = false;
         }
 

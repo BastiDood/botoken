@@ -1,11 +1,11 @@
 <script lang="ts">
-    import { PlusCircle } from '@steeze-ui/heroicons';
-    import { EventLog, isAddress } from 'ethers';
+    import { EventLog, isAddress, isError } from 'ethers';
     import type { Botoken } from '../../../../hardhat/typechain-types';
     import { Icon } from '@steeze-ui/svelte-icon';
+    import { PlusCircle } from '@steeze-ui/heroicons';
     import { assert } from '$lib/assert';
-    import { goto } from '$app/navigation';
     import { getToastStore } from '@skeletonlabs/skeleton';
+    import { goto } from '$app/navigation';
 
     // eslint-disable-next-line init-declarations
     export let user: Botoken;
@@ -42,14 +42,28 @@
             assert(isAddress(address), 'non-address event argument for poll creation');
             await goto(`/poll/${address}`);
         } catch (err) {
-            if (err instanceof Error)
+            if (isError(err, 'CALL_EXCEPTION') || isError(err, 'ACTION_REJECTED')) {
+                const reason = err.reason ?? 'unknown reason';
                 toast.trigger({
-                    message: `[${err.name}] ${err.message}`,
+                    message: `[${err.code}]: ${reason}.`,
+                    background: 'variant-filled-error',
+                    autohide: false,
+                });
+            } else if (isError(err, 'INSUFFICIENT_FUNDS'))
+                toast.trigger({
+                    message: '[INSUFFICIENT_FUNDS]: not enough funds.',
+                    background: 'variant-filled-error',
+                    autohide: false,
+                });
+            else if (isError(err, 'UNSUPPORTED_OPERATION'))
+                toast.trigger({
+                    message: `[UNSUPPORTED_OPERATION]: cannot execute ${err.operation} (${err.shortMessage}).`,
                     background: 'variant-filled-error',
                     autohide: false,
                 });
             throw err;
         } finally {
+            // eslint-disable-next-line require-atomic-updates
             button.disabled = false;
         }
     }
