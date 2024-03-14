@@ -21,6 +21,7 @@
         "@sveltejs/kit": "^2.5.4",
         "@sveltejs/vite-plugin-svelte": "^3.0.2",
         "@tailwindcss/typography": "^0.5.10",
+        "@types/web-app-manifest": "^1.0.8",
         "@typescript-eslint/eslint-plugin": "^7.2.0",
         "@typescript-eslint/parser": "^7.2.0",
         "autoprefixer": "^10.4.18",
