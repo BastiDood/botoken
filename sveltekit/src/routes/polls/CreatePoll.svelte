@@ -38,7 +38,7 @@
             const event = receipt.logs.find(isEvent);
             assert(typeof event !== 'undefined', 'event log not found');
 
-            const address = event.args[0];
+            const [address, ..._rest] = event.args;
             assert(isAddress(address), 'non-address event argument for poll creation');
             await goto(`/poll/${address}`);
         } catch (err) {

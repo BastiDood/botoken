@@ -17,7 +17,10 @@
         }
     ],
     "rules": {
-        "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
+        "@typescript-eslint/no-unused-vars": [
+            "error",
+            { "varsIgnorePattern": "^_", "argsIgnorePattern": "^_", "destructuredArrayIgnorePattern": "^_" }
+        ],
         "no-constant-binary-expression": "error",
         "no-constructor-return": "error",
         "no-duplicate-imports": "error",
