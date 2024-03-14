@@ -1,8 +1,9 @@
 <script lang="ts">
-    import { Botoken__factory } from '../../../hardhat/typechain-types';
+    import { Botoken__factory } from '../../../../hardhat/typechain-types';
     import CreatePoll from './CreatePoll.svelte';
     import Error from '$lib/alerts/Error.svelte';
     import { ProgressBar } from '@skeletonlabs/skeleton';
+    import env from '$lib/env';
     import { get } from '$lib/provider';
     const provider = get();
 </script>
@@ -10,11 +11,12 @@
 {#if provider === null}
     <Error>No provider available.</Error>
 {:else}
+    {@const contract = Botoken__factory.connect(env.DEPLOYMENT_ADDRESS, provider)}
     {#await provider.getSigner()}
         <ProgressBar />
-    {:then { address }}
-        {@const contract = Botoken__factory.connect(address, provider)}
-        <CreatePoll {contract} />
+    {:then signer}
+        {@const user = contract.connect(signer)}
+        <CreatePoll {user} />
     {:catch err}
         <Error>{err}</Error>
     {/await}

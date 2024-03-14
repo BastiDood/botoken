@@ -1,18 +1,20 @@
 <script lang="ts">
-    import { PlusCircle, XCircle } from '@steeze-ui/heroicons';
+    import { PlusCircle } from '@steeze-ui/heroicons';
     import { EventLog, isAddress } from 'ethers';
-    import type { Botoken } from '../../../hardhat/typechain-types';
+    import type { Botoken } from '../../../../hardhat/typechain-types';
     import { Icon } from '@steeze-ui/svelte-icon';
     import { assert } from '$lib/assert';
     import { goto } from '$app/navigation';
+    import { getToastStore } from '@skeletonlabs/skeleton';
 
     // eslint-disable-next-line init-declarations
-    export let contract: Botoken;
+    export let user: Botoken;
 
     function isEvent(log: unknown): log is EventLog {
         return log instanceof EventLog;
     }
 
+    const toast = getToastStore();
     async function submit(form: HTMLFormElement, button: HTMLElement | null) {
         assert(button !== null, 'empty button submitter');
         assert(button instanceof HTMLButtonElement, 'non-button submitter');
@@ -29,7 +31,7 @@
 
         button.disabled = true;
         try {
-            const result = await contract.createPoll(title, stake);
+            const result = await user.createPoll(title, stake);
             const receipt = await result.wait();
             assert(receipt !== null, 'transaction has not been minted');
 
@@ -39,6 +41,14 @@
             const address = event.args[0];
             assert(isAddress(address), 'non-address event argument for poll creation');
             await goto(`/poll/${address}`);
+        } catch (err) {
+            if (err instanceof Error)
+                toast.trigger({
+                    message: `[${err.name}] ${err.message}`,
+                    background: 'variant-filled-error',
+                    autohide: false,
+                });
+            throw err;
         } finally {
             button.disabled = false;
         }
@@ -64,8 +74,4 @@
             <span>Create Poll</span>
         </button>
     </form>
-    <button type="button" class="btn variant-filled-error w-full" on:click>
-        <Icon src={XCircle} theme="mini" class="size-6" />
-        <span>Disconnect</span>
-    </button>
 </div>
