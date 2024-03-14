@@ -93,13 +93,13 @@ pnpm --filter=botoken-sveltekit lint:svelte
 
 ```bash
 # Compile the contract and its TypeScript types
-pnpm --filter=botoken-sveltekit compile
+pnpm --filter=botoken-hardhat compile
 
 # Run unit tests
-pnpm --filter=botoken-sveltekit test
+pnpm --filter=botoken-hardhat test
 
 # Deploy the contract to the Arbitrum Sepolia testnet
-pnpm --filter=botoken-sveltekit deploy:arb
+pnpm --filter=botoken-hardhat deploy:arb
 ```
 
 ## User Interface
