@@ -6,11 +6,10 @@ function assert(condition: unknown, msg = 'assertion error'): asserts condition 
     if (!condition) throw new Error(msg);
 }
 
-const { error, parsed } = config();
-if (typeof error !== 'undefined') throw error;
-assert(typeof parsed !== 'undefined', 'no environment variables');
+const { error } = config();
+if (typeof error !== 'undefined') console.error(error);
 
-const { ARBITRUM_RPC_URL, WALLET_PUB_KEY, WALLET_PRV_KEY, ETHERSCAN_API_KEY } = parsed;
+const { ARBITRUM_RPC_URL, WALLET_PUB_KEY, WALLET_PRV_KEY, ETHERSCAN_API_KEY } = process.env;
 assert(ARBITRUM_RPC_URL, 'no Arbitrum RPC URL provided');
 assert(ETHERSCAN_API_KEY, 'empty API key for Etherscan');
 assert(WALLET_PUB_KEY, 'empty public key for the wallet');
