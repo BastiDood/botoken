@@ -1,0 +1,13 @@
+/*
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: no-referrer
+
+/*.js
+  Content-Type: application/javascript
+
+/*.json
+  Content-Type: application/json
+
+/*.css
+  Content-Type: text/css
