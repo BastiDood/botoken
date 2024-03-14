@@ -15,9 +15,11 @@
 
     // eslint-disable-next-line init-declarations
     export let user: Botoken;
+    // eslint-disable-next-line init-declarations
+    export let address: string;
 
     const toast = getToastStore();
-    const pattern = '0x[0-9a-f]{40}';
+    const pattern = '0x[0-9A-Fa-f]{40}';
     const dispatch = createEventDispatcher<{ done: Payload }>();
 
     async function submit(form: HTMLFormElement, button: HTMLElement | null) {
@@ -26,7 +28,7 @@
 
         const data = new FormData(form);
 
-        const address = data.get('amount') ?? '';
+        const address = data.get('address') ?? '';
         assert(typeof address === 'string', 'non-string address encountered');
         assert(address.length > 0, 'empty address encountered');
 
@@ -55,7 +57,7 @@
         }
 
         toast.trigger({
-            message: `Successfully extracted ${stake} BTK to ${address} from the contract residuals.`,
+            message: `Successfully extracted ${stake} residual BTK to ${address}.`,
             background: 'variant-filled-success',
         });
         dispatch('done', { address, stake });
@@ -72,6 +74,7 @@
             type="text"
             name="address"
             placeholder="0x0000000000000000000000000000000000000000"
+            value={address}
             {pattern}
             required
             class="input px-4 py-2"
