@@ -4,7 +4,6 @@
     "scripts": {
         "compile": "hardhat compile",
         "test": "hardhat test",
-        "verify": "hardhat verify --network arbitrum-sepolia 0x1ca15F03E8169905E0d12ea8202a72c20bC047b1",
         "deploy:arb": "hardhat run --network arbitrum-sepolia scripts/deploy.ts"
     },
     "devDependencies": {
