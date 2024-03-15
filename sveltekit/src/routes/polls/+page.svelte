@@ -26,7 +26,13 @@
         {#if hash.length === 0}
             <CreatePoll {user} />
         {:else}
-            <GetPoll {user} {poll} />
+            {#await provider.getBlockNumber()}
+                <ProgressBar />
+            {:then block}
+                <GetPoll {user} {poll} {block} />
+            {:catch err}
+                <Error>{err}</Error>
+            {/await}
         {/if}
     {:catch err}
         <Error>{err}</Error>

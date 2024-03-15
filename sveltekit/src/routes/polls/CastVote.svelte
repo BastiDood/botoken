@@ -1,10 +1,11 @@
 <script lang="ts">
-    import { Bookmark } from '@steeze-ui/heroicons';
+    import { Bookmark, LockClosed } from '@steeze-ui/heroicons';
+    import { EventLog, isError } from 'ethers';
     import type { Botoken } from '../../../../hardhat/typechain-types';
     import { Icon } from '@steeze-ui/svelte-icon';
     import { assert } from '$lib/assert';
+    import { createEventDispatcher } from 'svelte';
     import { getToastStore } from '@skeletonlabs/skeleton';
-    import { isError } from 'ethers';
 
     // eslint-disable-next-line init-declarations
     export let poll: string;
@@ -12,6 +13,11 @@
     export let user: Botoken;
 
     const toast = getToastStore();
+    const dispatch = createEventDispatcher<{ vote: null; close: bigint }>();
+
+    function isEvent(log: unknown): log is EventLog {
+        return log instanceof EventLog;
+    }
 
     async function submit(form: HTMLFormElement, button: HTMLElement | null) {
         assert(button !== null, 'empty button submitter');
@@ -28,6 +34,7 @@
             const result = await user.voteOn(poll, stake);
             const receipt = await result.wait();
             assert(receipt !== null, 'transaction has not been minted');
+            dispatch('vote');
         } catch (err) {
             if (isError(err, 'CALL_EXCEPTION') || isError(err, 'ACTION_REJECTED')) {
                 const reason = err.reason ?? 'unknown reason';
@@ -54,10 +61,52 @@
             button.disabled = false;
         }
     }
+
+    async function reset(button: HTMLElement | null) {
+        assert(button !== null, 'empty button submitter');
+        assert(button instanceof HTMLButtonElement, 'non-button submitter');
+        button.disabled = true;
+        try {
+            const result = await user.closePoll(poll);
+            const receipt = await result.wait();
+            assert(receipt !== null, 'transaction has not been minted');
+
+            const event = receipt.logs.find(isEvent);
+            assert(typeof event !== 'undefined', 'event log not found');
+
+            const [_author, balance, ..._rest] = event.args;
+            assert(typeof balance === 'bigint', 'non-integer balance when closing the poll');
+            dispatch('close', balance);
+        } catch (err) {
+            if (isError(err, 'CALL_EXCEPTION') || isError(err, 'ACTION_REJECTED')) {
+                const reason = err.reason ?? 'unknown reason';
+                toast.trigger({
+                    message: `[${err.code}]: ${reason}.`,
+                    background: 'variant-filled-error',
+                    autohide: false,
+                });
+            } else if (isError(err, 'INSUFFICIENT_FUNDS'))
+                toast.trigger({
+                    message: '[INSUFFICIENT_FUNDS]: not enough funds.',
+                    background: 'variant-filled-error',
+                    autohide: false,
+                });
+            else if (isError(err, 'UNSUPPORTED_OPERATION'))
+                toast.trigger({
+                    message: `[UNSUPPORTED_OPERATION]: cannot execute ${err.operation} (${err.shortMessage}).`,
+                    background: 'variant-filled-error',
+                    autohide: false,
+                });
+            throw err;
+        } finally {
+            button.disabled = false;
+        }
+    }
 </script>
 
 <form
     on:submit|self|preventDefault|stopPropagation={({ currentTarget, submitter }) => submit(currentTarget, submitter)}
+    on:submit|self|preventDefault|stopPropagation={({ submitter }) => reset(submitter)}
     class="grid grid-cols-[auto_1fr] gap-x-4 space-y-4"
 >
     <label class="label col-span-full grid grid-cols-subgrid items-center">
@@ -67,5 +116,9 @@
     <button type="submit" class="btn variant-filled-success col-span-full">
         <Icon src={Bookmark} theme="mini" class="size-6" />
         <span>Vote</span>
+    </button>
+    <button type="reset" class="btn variant-filled-error col-span-full">
+        <Icon src={LockClosed} theme="mini" class="size-6" />
+        <span>Finalize</span>
     </button>
 </form>
