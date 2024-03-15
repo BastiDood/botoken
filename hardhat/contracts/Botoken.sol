@@ -68,12 +68,12 @@ contract Botoken is ERC20('Botoken', 'BTK'), Ownable(msg.sender) {
         _mint(address(this), _supply);
     }
 
-    function as_final(address _author) public view validPoll(_author) returns (Final memory) {
+    function asFinal(address _author) public view validPoll(_author) returns (Final memory) {
         Poll storage _poll = _polls[_author];
         return Final(_poll._title, _poll._pot, _poll._consensus);
     }
 
-    function finals() public view returns (Final[] memory output) {
+    function finals() public view returns (Final[] memory) {
         return _finals;
     }
 
@@ -103,7 +103,7 @@ contract Botoken is ERC20('Botoken', 'BTK'), Ownable(msg.sender) {
     function closePoll(address _author) public validPoll(_author) onlyOwner returns (int) {
         Poll storage _poll = _polls[_author];
 
-        string storage _title = _poll._title;
+        string memory _title = _poll._title;
         uint _pot = _poll._pot;
         address[] memory _voters = _poll._voters.values();
         uint _count = _voters.length;
@@ -118,8 +118,8 @@ contract Botoken is ERC20('Botoken', 'BTK'), Ownable(msg.sender) {
         emit Closed(_author, _title, _pot, _consensus);
 
         // Move the poll to finalized polls
-        delete _polls[_author];
         _finals.push(Final(_title, _pot, _consensus));
+        delete _polls[_author];
 
         return _consensus;
     }
