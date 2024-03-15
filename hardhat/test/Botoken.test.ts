@@ -55,7 +55,7 @@ describe('full election flow', () => {
             expect(_title).eq('Does this test pass?');
             expect(_pot).eq(10n);
             expect(_consensus).eq(0n);
-            expect(await Botoken.finals()).empty;
+            expect(await Botoken.finals()).lengthOf(0);
         }
 
         {
@@ -66,7 +66,7 @@ describe('full election flow', () => {
             const { _pot, _consensus } = await Botoken.asFinal(alice);
             expect(_pot).eq(20n);
             expect(_consensus).eq(10n);
-            expect(await Botoken.finals()).empty;
+            expect(await Botoken.finals()).lengthOf(0);
         }
 
         {
@@ -77,7 +77,7 @@ describe('full election flow', () => {
             const { _pot, _consensus } = await Botoken.asFinal(alice);
             expect(_pot).eq(40n);
             expect(_consensus).eq(-10n);
-            expect(await Botoken.finals()).empty;
+            expect(await Botoken.finals()).lengthOf(0);
         }
 
         {
@@ -90,7 +90,7 @@ describe('full election flow', () => {
             expect(await Botoken.balanceOf(bob)).eq(20n + 13n);
             expect(await Botoken.balanceOf(charlie)).eq(30n + 13n);
             const [{ _title, _pot, _consensus }, ...rest] = await Botoken.finals();
-            expect(rest).empty;
+            expect(rest).lengthOf(0);
             expect(_title).eq('Does this test pass?');
             expect(_pot).eq(40n);
             expect(_consensus).eq(-10n);
