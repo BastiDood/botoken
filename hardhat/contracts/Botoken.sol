@@ -11,7 +11,7 @@ contract Botoken is ERC20('Botoken', 'BTK'), Ownable(msg.sender) {
 
     event Creation(address indexed author, string title, uint stake);
     event Vote(address indexed author, address indexed voter, int balance);
-    event Close(address indexed author, int balance);
+    event Close(address indexed author, string title, uint pot, int balance);
 
     struct Poll {
         string _title;
@@ -87,16 +87,17 @@ contract Botoken is ERC20('Botoken', 'BTK'), Ownable(msg.sender) {
     function closePoll(address _author) public validPoll(_author) onlyOwner returns (int) {
         Poll storage _poll = _polls[_author];
 
+        uint _pot = _poll._pot;
         address[] memory _voters = _poll._voters.values();
         uint _count = _voters.length;
-        uint _share = _poll._pot / (_count + 1);
+        uint _share = _pot / (_count + 1);
 
         // Evenly redistribute the voting power
         releaseResidual(_author, _share);
         for (uint i = 0; i < _count; ++i) releaseResidual(_voters[i], _share);
 
         int _balance = _poll._balance;
-        emit Close(_author, _balance);
+        emit Close(_author, _poll._title, _pot, _balance);
 
         // NOTE: Residual tokens are kept by the contract.
         delete _polls[_author];
