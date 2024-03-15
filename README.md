@@ -12,6 +12,7 @@
 Each Botoken system is composed of three users: The Botoken smart contract is an [ownable] ERC20 token, where the owner is the "administrator" or "arbiter" of polls.
 
 -   Each Botoken smart contract deployment is an ownable ERC20 token, where the Owner is the only "administrator" or "arbiter" of the polling system.
+    -   The Owner is the one who first deploys the contract.
     -   The Owner may not participate in or vote on any of the proposals.
     -   The Owner may mint or inject new tokens into the system at no cost. The zero-cost minting is meant to decouple the monetary value of Ethereum from the abstract value of voting power.
     -   The Owner may transfer tokens from the contract deployment's "residuals" into another account. More on this in the next section on [incentives](#the-incentive).

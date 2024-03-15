@@ -48,6 +48,7 @@
                 ERC20 token, where the <strong>Owner</strong> is the <em>only</em> "administrator" or "arbiter" of the
                 polling system.
                 <ul>
+                    <li>The Owner is the one who first deploys the contract.</li>
                     <li>The Owner may <em>not</em> participate in or vote on any of the proposals.</li>
                     <li>
                         The Owner <em>may</em> mint or inject new tokens into the system at no cost. The zero-cost minting
