@@ -7,8 +7,8 @@
     export let balance: bigint;
 </script>
 
-<section class="prose dark:prose-invert">
-    <h1>{title}</h1>
+<section class="space-y-4">
+    <h1 class="h1">{title}</h1>
     <p>This poll currently has <strong>{pot} BTK</strong> in the pot.</p>
     {#if balance > 0}
         The consensus is <strong>yes ({balance})</strong>.

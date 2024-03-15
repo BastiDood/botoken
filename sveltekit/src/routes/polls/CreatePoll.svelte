@@ -69,23 +69,20 @@
     }
 </script>
 
-<div class="space-y-4">
-    <form
-        on:submit|self|preventDefault|stopPropagation={({ currentTarget, submitter }) =>
-            submit(currentTarget, submitter)}
-        class="grid grid-cols-[auto_1fr] gap-x-4 space-y-4"
-    >
-        <label class="label col-span-full grid grid-cols-subgrid items-center">
-            <span>Title</span>
-            <input type="text" name="title" placeholder="Should we create a poll?" required class="input px-4 py-2" />
-        </label>
-        <label class="label col-span-full grid grid-cols-subgrid items-center">
-            <span>Amount</span>
-            <input type="number" name="amount" placeholder="BTK" required class="input px-4 py-2" />
-        </label>
-        <button type="submit" class="btn variant-filled-success col-span-full">
-            <Icon src={PlusCircle} theme="mini" class="size-6" />
-            <span>Create Poll</span>
-        </button>
-    </form>
-</div>
+<form
+    on:submit|self|preventDefault|stopPropagation={({ currentTarget, submitter }) => submit(currentTarget, submitter)}
+    class="grid grid-cols-[auto_1fr] gap-x-4 space-y-4"
+>
+    <label class="label col-span-full grid grid-cols-subgrid items-center">
+        <span>Title</span>
+        <input type="text" name="title" placeholder="Should we create a poll?" required class="input px-4 py-2" />
+    </label>
+    <label class="label col-span-full grid grid-cols-subgrid items-center">
+        <span>Amount</span>
+        <input type="number" name="amount" placeholder="BTK" required class="input px-4 py-2" />
+    </label>
+    <button type="submit" class="btn variant-filled-success col-span-full">
+        <Icon src={PlusCircle} theme="mini" class="size-6" />
+        <span>Create Poll</span>
+    </button>
+</form>

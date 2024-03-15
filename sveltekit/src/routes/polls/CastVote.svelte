@@ -62,7 +62,8 @@
         }
     }
 
-    async function reset(button: HTMLElement | null) {
+    async function reset(form: HTMLFormElement) {
+        const button = form.elements.namedItem('finalize');
         assert(button !== null, 'empty button submitter');
         assert(button instanceof HTMLButtonElement, 'non-button submitter');
         button.disabled = true;
@@ -106,18 +107,18 @@
 
 <form
     on:submit|self|preventDefault|stopPropagation={({ currentTarget, submitter }) => submit(currentTarget, submitter)}
-    on:submit|self|preventDefault|stopPropagation={({ submitter }) => reset(submitter)}
+    on:reset|self|preventDefault|stopPropagation={({ currentTarget }) => reset(currentTarget)}
     class="grid grid-cols-[auto_1fr] gap-x-4 space-y-4"
 >
     <label class="label col-span-full grid grid-cols-subgrid items-center">
         <span>Amount</span>
         <input type="number" name="amount" placeholder="BTK" required class="input px-4 py-2" />
     </label>
-    <button type="submit" class="btn variant-filled-success col-span-full">
+    <button type="submit" name="vote" class="btn variant-filled-success col-span-full">
         <Icon src={Bookmark} theme="mini" class="size-6" />
         <span>Vote</span>
     </button>
-    <button type="reset" class="btn variant-filled-error col-span-full">
+    <button type="reset" name="finalize" class="btn variant-filled-error col-span-full">
         <Icon src={LockClosed} theme="mini" class="size-6" />
         <span>Finalize</span>
     </button>

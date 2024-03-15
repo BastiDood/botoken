@@ -14,6 +14,7 @@
     export let poll: string;
     // eslint-disable-next-line init-declarations
     export let user: Botoken;
+    // eslint-disable-next-line new-cap
     $: closeEvents = user.filters.Close(poll);
 
     async function retrieve(address: string) {
@@ -29,33 +30,31 @@
     let history = display;
 </script>
 
-<div class="space-y-4">
-    {#key display}
-        {#await retrieve(poll)}
-            <ProgressBar />
-        {:then result}
-            <DisplayVote {...result} />
-        {:catch err}
-            <ErrorAlert>{err}</ErrorAlert>
-        {/await}
-    {/key}
-    <hr />
-    <CastVote {poll} {user} on:close={() => (display = history = Symbol())} on:vote={() => (display = Symbol())} />
-    <hr />
-    {#key history}
-        {#await user.queryFilter(closeEvents, block - 8, block)}
-            <ProgressBar />
-        {:then events}
-            <section class="prose dark:prose-invert max-w-none">
-                <h2 class="h2">Past Poll Results</h2>
-                {#if events.length === 0}
-                    <WarningAlert>There have been no past events.</WarningAlert>
-                {:else}
-                    <EventLog {events} />
-                {/if}
-            </section>
-        {:catch err}
-            <ErrorAlert>{err}</ErrorAlert>
-        {/await}
-    {/key}
-</div>
+{#key display}
+    {#await retrieve(poll)}
+        <ProgressBar />
+    {:then result}
+        <DisplayVote {...result} />
+    {:catch err}
+        <ErrorAlert>{err}</ErrorAlert>
+    {/await}
+{/key}
+<hr />
+<CastVote {poll} {user} on:close={() => (display = history = Symbol())} on:vote={() => (display = Symbol())} />
+<hr />
+{#key history}
+    {#await user.queryFilter(closeEvents, block - 1024, block)}
+        <ProgressBar />
+    {:then events}
+        <section class="space-y-4">
+            <h2 class="h2">Past Poll Results</h2>
+            {#if events.length === 0}
+                <WarningAlert>There have been no past events.</WarningAlert>
+            {:else}
+                <EventLog {events} />
+            {/if}
+        </section>
+    {:catch err}
+        <ErrorAlert>{err}</ErrorAlert>
+    {/await}
+{/key}
