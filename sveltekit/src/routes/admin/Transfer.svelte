@@ -97,7 +97,7 @@
     </label>
     <label class="label flex items-center gap-2">
         <span>Amount</span>
-        <input type="number" name="amount" placeholder="BTK" required class="input px-4 py-2" />
+        <input type="number" name="amount" placeholder="BTK" required min="1" class="input px-4 py-2" />
     </label>
     <button type="submit" name="transfer" class="btn variant-filled-error w-full">
         <Icon src={ArrowRightStartOnRectangle} theme="mini" class="size-6" />
