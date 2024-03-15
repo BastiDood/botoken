@@ -4,16 +4,16 @@
     // eslint-disable-next-line init-declarations
     export let pot: bigint;
     // eslint-disable-next-line init-declarations
-    export let balance: bigint;
+    export let consensus: bigint;
 </script>
 
 <section class="space-y-4">
     <h1 class="h1">{title}</h1>
     <p>This poll currently has <strong>{pot} BTK</strong> in the pot.</p>
-    {#if balance > 0}
-        The consensus is <strong>yes ({balance})</strong>.
-    {:else if balance < 0}
-        The consensus is <strong>no ({balance})</strong>.
+    {#if consensus > 0}
+        The consensus is <strong>yes ({consensus})</strong>.
+    {:else if consensus < 0}
+        The consensus is <strong>no ({consensus})</strong>.
     {:else}
         There is no consensus.
     {/if}

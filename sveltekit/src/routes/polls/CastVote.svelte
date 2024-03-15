@@ -6,6 +6,7 @@
     import { assert } from '$lib/assert';
     import { createEventDispatcher } from 'svelte';
     import { getToastStore } from '@skeletonlabs/skeleton';
+    import { goto } from '$app/navigation';
 
     // eslint-disable-next-line init-declarations
     export let poll: string;
@@ -13,7 +14,7 @@
     export let user: Botoken;
 
     const toast = getToastStore();
-    const dispatch = createEventDispatcher<{ vote: null; close: bigint }>();
+    const dispatch = createEventDispatcher<{ vote: null }>();
 
     function isEvent(log: unknown): log is EventLog {
         return log instanceof EventLog;
@@ -66,6 +67,7 @@
         const button = form.elements.namedItem('finalize');
         assert(button !== null, 'empty button submitter');
         assert(button instanceof HTMLButtonElement, 'non-button submitter');
+
         button.disabled = true;
         try {
             const result = await user.closePoll(poll);
@@ -77,7 +79,6 @@
 
             const [_author, balance, ..._rest] = event.args;
             assert(typeof balance === 'bigint', 'non-integer balance when closing the poll');
-            dispatch('close', balance);
         } catch (err) {
             if (isError(err, 'CALL_EXCEPTION') || isError(err, 'ACTION_REJECTED')) {
                 const reason = err.reason ?? 'unknown reason';
@@ -102,6 +103,7 @@
         } finally {
             button.disabled = false;
         }
+        await goto('/polls/');
     }
 </script>
 

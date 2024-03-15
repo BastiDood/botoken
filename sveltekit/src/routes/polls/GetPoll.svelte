@@ -2,59 +2,25 @@
     import type { Botoken } from '../../../../hardhat/typechain-types';
     import CastVote from './CastVote.svelte';
     import DisplayVote from './DisplayPoll.svelte';
-    import EventLog from './EventLog.svelte';
+    import ErrorAlert from '$lib/alerts/Error.svelte';
     import { ProgressBar } from '@skeletonlabs/skeleton';
 
-    import ErrorAlert from '$lib/alerts/Error.svelte';
-    import WarningAlert from '$lib/alerts/Warning.svelte';
-
-    // eslint-disable-next-line init-declarations
-    export let block: number;
     // eslint-disable-next-line init-declarations
     export let poll: string;
     // eslint-disable-next-line init-declarations
     export let user: Botoken;
-    // eslint-disable-next-line new-cap
-    $: closeEvents = user.filters.Close(poll);
-
-    async function retrieve(address: string) {
-        const [title, pot, balance] = await Promise.all([
-            user.title(address),
-            user.pot(address),
-            user.balance(address),
-        ]);
-        return { title, pot, balance };
-    }
 
     let display = Symbol();
-    let history = display;
 </script>
 
 {#key display}
-    {#await retrieve(poll)}
+    {#await user.as_final(poll)}
         <ProgressBar />
-    {:then result}
-        <DisplayVote {...result} />
+    {:then { _title, _pot, _consensus }}
+        <DisplayVote title={_title} pot={_pot} consensus={_consensus} />
     {:catch err}
         <ErrorAlert>{err}</ErrorAlert>
     {/await}
 {/key}
 <hr />
-<CastVote {poll} {user} on:close={() => (display = history = Symbol())} on:vote={() => (display = Symbol())} />
-<hr />
-{#key history}
-    {#await user.queryFilter(closeEvents, block - 1024, block)}
-        <ProgressBar />
-    {:then events}
-        <section class="space-y-4">
-            <h2 class="h2">Past Poll Results</h2>
-            {#if events.length === 0}
-                <WarningAlert>There have been no past events.</WarningAlert>
-            {:else}
-                <EventLog {events} />
-            {/if}
-        </section>
-    {:catch err}
-        <ErrorAlert>{err}</ErrorAlert>
-    {/await}
-{/key}
+<CastVote {poll} {user} on:vote={() => (display = Symbol())} />

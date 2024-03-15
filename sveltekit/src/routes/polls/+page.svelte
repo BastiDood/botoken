@@ -28,22 +28,10 @@
             {#if hash.length === 0}
                 <h1 class="h1">Create a New Poll</h1>
                 <CreatePoll {user} />
-                {#await provider.getBlockNumber()}
-                    <ProgressBar />
-                {:then block}
-                    <hr />
-                    <RecentPolls {user} {block} />
-                {:catch err}
-                    <Error>{err}</Error>
-                {/await}
+                <hr />
+                <RecentPolls {user} />
             {:else}
-                {#await provider.getBlockNumber()}
-                    <ProgressBar />
-                {:then block}
-                    <GetPoll {user} {poll} {block} />
-                {:catch err}
-                    <Error>{err}</Error>
-                {/await}
+                <GetPoll {user} {poll} />
             {/if}
         </div>
     {:catch err}
