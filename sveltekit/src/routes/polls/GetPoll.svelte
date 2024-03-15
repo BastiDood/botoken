@@ -2,6 +2,7 @@
     import type { Botoken } from '../../../../hardhat/typechain-types';
     import CastVote from './CastVote.svelte';
     import DisplayVote from './DisplayPoll.svelte';
+    import EventLog from './EventLog.svelte';
     import { ProgressBar } from '@skeletonlabs/skeleton';
 
     import ErrorAlert from '$lib/alerts/Error.svelte';
@@ -50,26 +51,7 @@
                 {#if events.length === 0}
                     <WarningAlert>There have been no past events.</WarningAlert>
                 {:else}
-                    <div class="card p-2">
-                        <dl class="list-dl">
-                            {#each events as { args: [_address, title, pot, balance] }}
-                                {@const bal = balance > 0 ? `+${balance}` : balance.toString()}
-                                <div>
-                                    {#if balance > 0}
-                                        <span class="badge bg-success-500">+{balance}</span>
-                                    {:else if balance < 0}
-                                        <span class="badge bg-error-500">{balance}</span>
-                                    {:else}
-                                        <span class="badge bg-warning-500">0</span>
-                                    {/if}
-                                    <span class="flex-auto">
-                                        <dt class="font-bold">[{pot} BTK] {title}</dt>
-                                        <dd class="text-sm opacity-50">The consensus is {bal}.</dd>
-                                    </span>
-                                </div>
-                            {/each}
-                        </dl>
-                    </div>
+                    <EventLog {events} />
                 {/if}
             </section>
         {:catch err}
