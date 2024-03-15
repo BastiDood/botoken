@@ -14,7 +14,7 @@
 </script>
 
 {#key display}
-    {#await user.as_final(poll)}
+    {#await user.asFinal(poll)}
         <ProgressBar />
     {:then { _title, _pot, _consensus }}
         <DisplayVote title={_title} pot={_pot} consensus={_consensus} />
