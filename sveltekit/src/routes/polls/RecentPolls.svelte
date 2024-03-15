@@ -26,8 +26,8 @@
                             <span class="badge bg-warning-500">0</span>
                         {/if}
                         <span class="flex-auto">
-                            <dt>{_title}</dt>
-                            <dd>The total pot is <strong>{_pot} BTK</strong>.</dd>
+                            <dt class="font-bold">{_title}</dt>
+                            <dd class="text-sm opacity-50">The total pot is <strong>{_pot} BTK</strong>.</dd>
                         </span>
                     </div>
                 {/each}
