@@ -10,6 +10,7 @@ contract Botoken is ERC20('Botoken', 'BTK'), Ownable(msg.sender) {
     using EnumerableSet for EnumerableSet.AddressSet;
 
     error OwnerForbidden();
+    error AuthorForbidden();
     error VacantPoll();
     error ExistingPoll();
 
@@ -57,6 +58,11 @@ contract Botoken is ERC20('Botoken', 'BTK'), Ownable(msg.sender) {
         _;
     }
 
+    modifier nonAuthor(address _author) {
+        if (_msgSender() == _author) revert AuthorForbidden();
+        _;
+    }
+
     constructor(uint _supply) {
         // Voting power is a zero-sum game!
         _mint(address(this), _supply);
@@ -80,7 +86,7 @@ contract Botoken is ERC20('Botoken', 'BTK'), Ownable(msg.sender) {
         emit Created(_author, _title, _stake);
     }
 
-    function voteOn(address _author, int _vote) public validPoll(_author) nonOwner {
+    function voteOn(address _author, int _vote) public validPoll(_author) nonOwner nonAuthor(_author) {
         // Sway the vote balance (positive or negative)
         address _sender = _msgSender();
         Poll storage _poll = _polls[_author];
