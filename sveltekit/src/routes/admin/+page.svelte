@@ -46,7 +46,7 @@
             <hr />
             <Store {user} on:done={() => (selfBalance = contractBalance = Symbol())} />
             <hr />
-            <Transfer {user} address={signer.address} on:done={() => (selfBalance = Symbol())} />
+            <Transfer {user} address={signer.address} on:done={() => (selfBalance = contractBalance = Symbol())} />
         {:catch err}
             <ErrorAlert>{err}</ErrorAlert>
         {/await}
