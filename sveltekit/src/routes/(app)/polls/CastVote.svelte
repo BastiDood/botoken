@@ -1,7 +1,7 @@
 <script lang="ts">
     import { Bookmark, LockClosed } from '@steeze-ui/heroicons';
     import { EventLog, isError } from 'ethers';
-    import type { Botoken } from '../../../../hardhat/typechain-types';
+    import type { Botoken } from '../../../../../hardhat/typechain-types';
     import { Icon } from '@steeze-ui/svelte-icon';
     import { assert } from '$lib/assert';
     import { createEventDispatcher } from 'svelte';

@@ -1,46 +1,35 @@
 <script lang="ts">
-    import { EventLog, isAddress, isError } from 'ethers';
-    import type { Botoken } from '../../../../hardhat/typechain-types';
+    import type { Botoken } from '../../../../../hardhat/typechain-types';
     import { Icon } from '@steeze-ui/svelte-icon';
-    import { PlusCircle } from '@steeze-ui/heroicons';
+    import { InboxArrowDown } from '@steeze-ui/heroicons';
     import { assert } from '$lib/assert';
+    import { createEventDispatcher } from 'svelte';
     import { getToastStore } from '@skeletonlabs/skeleton';
-    import { goto } from '$app/navigation';
+    import { isError } from 'ethers';
 
     // eslint-disable-next-line init-declarations
     export let user: Botoken;
 
-    function isEvent(log: unknown): log is EventLog {
-        return log instanceof EventLog;
-    }
-
     const toast = getToastStore();
+    const dispatch = createEventDispatcher<{ done: number }>();
+
     async function submit(form: HTMLFormElement, button: HTMLElement | null) {
         assert(button !== null, 'empty button submitter');
         assert(button instanceof HTMLButtonElement, 'non-button submitter');
 
         const data = new FormData(form);
-        const title = data.get('title') ?? '';
-        assert(typeof title === 'string', 'non-string input encountered');
-        assert(title.length > 0, 'empty title encountered');
-
         const amount = data.get('amount') ?? '';
-        assert(typeof amount === 'string', 'non-string input encountered');
+        assert(typeof amount === 'string', 'non-string amount encountered');
         assert(amount.length > 0, 'empty title encountered');
         const stake = parseInt(amount, 10);
+        assert(stake > 0, 'non-positive amount');
 
         button.disabled = true;
         try {
-            const result = await user.createPoll(title, stake);
-            const receipt = await result.wait();
-            assert(receipt !== null, 'transaction has not been minted');
-
-            const event = receipt.logs.find(isEvent);
-            assert(typeof event !== 'undefined', 'event log not found');
-
-            const [address, ..._rest] = event.args;
-            assert(isAddress(address), 'non-address event argument for poll creation');
-            await goto(`/polls/#${address}`);
+            const tx = await user.mint(stake);
+            const result = await tx.wait();
+            assert(result !== null, 'transaction has not been mined');
+            console.log(result);
         } catch (err) {
             if (isError(err, 'CALL_EXCEPTION') || isError(err, 'ACTION_REJECTED')) {
                 const reason = err.reason ?? 'unknown reason';
@@ -57,7 +46,7 @@
                 });
             else if (isError(err, 'UNSUPPORTED_OPERATION'))
                 toast.trigger({
-                    message: `[UNSUPPORTED_OPERATION]: cannot execute ${err.operation} (${err.shortMessage}).`,
+                    message: '[UNSUPPORTED_OPERATION]: cannot execute the operation.',
                     background: 'variant-filled-error',
                     autohide: false,
                 });
@@ -66,23 +55,25 @@
             // eslint-disable-next-line require-atomic-updates
             button.disabled = false;
         }
+
+        toast.trigger({
+            message: `Successfully minted ${stake} BTK into the contract residuals.`,
+            background: 'variant-filled-success',
+        });
+        dispatch('done', stake);
     }
 </script>
 
 <form
     on:submit|self|preventDefault|stopPropagation={({ currentTarget, submitter }) => submit(currentTarget, submitter)}
-    class="grid grid-cols-[auto_1fr] gap-x-4 space-y-4"
+    class="space-y-4"
 >
-    <label class="label col-span-full grid grid-cols-subgrid items-center">
-        <span>Title</span>
-        <input type="text" name="title" placeholder="Should we create a poll?" required class="input px-4 py-2" />
-    </label>
-    <label class="label col-span-full grid grid-cols-subgrid items-center">
+    <label class="label flex items-center gap-2">
         <span>Amount</span>
         <input type="number" name="amount" placeholder="BTK" required min="1" class="input px-4 py-2" />
     </label>
-    <button type="submit" class="btn variant-filled-success col-span-full">
-        <Icon src={PlusCircle} theme="mini" class="size-6" />
-        <span>Create Poll</span>
+    <button type="submit" name="mint" class="btn variant-filled-success w-full">
+        <Icon src={InboxArrowDown} theme="mini" class="size-6" />
+        <span>Mint</span>
     </button>
 </form>

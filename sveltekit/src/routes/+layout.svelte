@@ -4,7 +4,6 @@
     import SideBar from './SideBar.svelte';
     import { init } from '$lib/provider';
     import logo from '$lib/icons/icons-32.png';
-
     init();
     initializeStores();
 </script>

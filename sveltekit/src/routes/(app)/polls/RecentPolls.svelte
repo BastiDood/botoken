@@ -1,5 +1,5 @@
 <script lang="ts">
-    import type { Botoken } from '../../../../hardhat/typechain-types';
+    import type { Botoken } from '../../../../../hardhat/typechain-types';
     import Error from '$lib/alerts/Error.svelte';
     import { ProgressBar } from '@skeletonlabs/skeleton';
     import Warning from '$lib/alerts/Warning.svelte';

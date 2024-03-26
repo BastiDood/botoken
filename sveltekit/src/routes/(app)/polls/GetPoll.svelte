@@ -1,5 +1,5 @@
 <script lang="ts">
-    import type { Botoken } from '../../../../hardhat/typechain-types';
+    import type { Botoken } from '../../../../../hardhat/typechain-types';
     import CastVote from './CastVote.svelte';
     import DisplayVote from './DisplayPoll.svelte';
     import ErrorAlert from '$lib/alerts/Error.svelte';

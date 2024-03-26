@@ -1,7 +1,7 @@
 <script lang="ts">
-    import type { Botoken } from '../../../../hardhat/typechain-types';
+    import { ArrowRightEndOnRectangle } from '@steeze-ui/heroicons';
+    import type { Botoken } from '../../../../../hardhat/typechain-types';
     import { Icon } from '@steeze-ui/svelte-icon';
-    import { InboxArrowDown } from '@steeze-ui/heroicons';
     import { assert } from '$lib/assert';
     import { createEventDispatcher } from 'svelte';
     import { getToastStore } from '@skeletonlabs/skeleton';
@@ -26,7 +26,7 @@
 
         button.disabled = true;
         try {
-            const tx = await user.mint(stake);
+            const tx = await user.storeResidual(stake);
             const result = await tx.wait();
             assert(result !== null, 'transaction has not been mined');
             console.log(result);
@@ -57,8 +57,8 @@
         }
 
         toast.trigger({
-            message: `Successfully minted ${stake} BTK into the contract residuals.`,
-            background: 'variant-filled-success',
+            message: `Successfully stored ${stake} BTK into the contract residuals.`,
+            background: 'variant-filled-secondary',
         });
         dispatch('done', stake);
     }
@@ -72,8 +72,8 @@
         <span>Amount</span>
         <input type="number" name="amount" placeholder="BTK" required min="1" class="input px-4 py-2" />
     </label>
-    <button type="submit" name="mint" class="btn variant-filled-success w-full">
-        <Icon src={InboxArrowDown} theme="mini" class="size-6" />
-        <span>Mint</span>
+    <button type="submit" name="store" class="btn variant-filled-secondary w-full">
+        <Icon src={ArrowRightEndOnRectangle} theme="mini" class="size-6" />
+        <span>Store Residual</span>
     </button>
 </form>

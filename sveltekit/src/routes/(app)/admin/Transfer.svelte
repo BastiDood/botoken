@@ -7,7 +7,7 @@
 
 <script lang="ts">
     import { ArrowRightStartOnRectangle } from '@steeze-ui/heroicons';
-    import type { Botoken } from '../../../../hardhat/typechain-types';
+    import type { Botoken } from '../../../../../hardhat/typechain-types';
     import { Icon } from '@steeze-ui/svelte-icon';
     import { assert } from '$lib/assert';
     import { createEventDispatcher } from 'svelte';
