@@ -1,12 +1,14 @@
 <script lang="ts">
-    import { Botoken__factory } from '../../../../../hardhat/typechain-types';
+    import { Botoken__factory } from '../../../../../../hardhat/typechain-types';
     import Error from '$lib/alerts/Error.svelte';
+    import GetPoll from './GetPoll.svelte';
     import { ProgressBar } from '@skeletonlabs/skeleton';
     import env from '$lib/env';
     import { get } from '$lib/provider';
 
-    import CreatePoll from './CreatePoll.svelte';
-    import RecentPolls from './RecentPolls.svelte';
+    // eslint-disable-next-line init-declarations
+    export let data;
+    $: ({ poll } = data);
 
     const provider = get();
 </script>
@@ -20,10 +22,7 @@
     {:then signer}
         {@const user = contract.connect(signer)}
         <div class="space-y-4">
-            <h1 class="h1">Create a New Poll</h1>
-            <CreatePoll {user} />
-            <hr />
-            <RecentPolls {user} />
+            <GetPoll {user} {poll} />
         </div>
     {:catch err}
         <Error>{err}</Error>
